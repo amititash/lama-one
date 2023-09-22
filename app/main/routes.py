@@ -8,7 +8,7 @@ from app import db
 from app.errors.handlers import error_response
 from app.models import Table
 
-from app.lib.ask import get_scope, get_summary
+from app.llmutils.ask import get_scope, get_summary
 
 bp = Blueprint("main", __name__)
 
