@@ -1,11 +1,14 @@
 from apiflask import APIBlueprint as Blueprint
 from flask import current_app as app
-from flask import jsonify
+from flask import jsonify, request
 from sqlalchemy.exc import IntegrityError
+
 
 from app import db
 from app.errors.handlers import error_response
 from app.models import Table
+
+from app.lib.ask import get_scope, get_summary
 
 bp = Blueprint("main", __name__)
 
@@ -14,6 +17,28 @@ bp = Blueprint("main", __name__)
 def index():
     return jsonify(hello="scaffold")
 
+@bp.route("/scope", methods=['GET'])
+def scope_of_work():
+
+    args = request.args
+    print("here", args.get("limit"))
+
+    limit = args.get("limit")
+    question = args.get("question")
+    res = get_scope(question, limit)
+    final_res = res["data"]["Get"]["Issue"][0]["_additional"]["generate"]["groupedResult"]
+    return jsonify(response=final_res)
+
+@bp.route("/task-summary", methods=['GET'])
+def task_summary():
+
+    args = request.args
+    
+    limit = args.get("limit")
+    question = args.get("question")
+    res = get_summary(question, limit)
+    final_res = res["data"]["Get"]["Issue"][0]["_additional"]["generate"]["groupedResult"]
+    return jsonify(response=final_res)
 
 @bp.route("/log")
 def log():
